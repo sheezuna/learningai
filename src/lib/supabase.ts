@@ -245,15 +245,17 @@ export const supabaseHelpers = {
     user_journey?: Record<string, unknown>;
   }) => {
     const submissionData = {
+      // Map fullName to first_name for compatibility with existing schema
       first_name: formData.fullName || null,
-      last_name: null, // No longer collected separately
+      last_name: null, // No longer collected separately for AI course
+      // Note: age and grade will be added to database schema via migration
       age: formData.age || null,
       grade: formData.grade || null,
-      parent_email: null, // No longer collected
+      // parent_email removed - not needed for AI course
       postcode: formData.postcode,
       street_address: formData.streetAddress,
       city: formData.city || null,
-      destination: formData.destination || 'AI Course Registration',  // Default for course
+      destination: 'AI Course Registration',  // Fixed value for AI course
       latitude: formData.latitude || null,
       longitude: formData.longitude || null,
       location_accuracy: formData.location_accuracy || null,
@@ -282,23 +284,33 @@ export const supabaseHelpers = {
     }
 
     try {
-      console.log('🎯 Submitting form data to form_submissions table...')
+      console.log('🎯 Submitting AI course registration to form_submissions table...')
+      console.log('📋 Student Info:', { name: formData.fullName, age: formData.age, grade: formData.grade })
+      console.log('📍 Location Info:', { lat: formData.latitude, lng: formData.longitude, method: formData.location_method })
+      
       await supabaseHelpers.reliableInsert('form_submissions', submissionData, 5)
-      console.log('✅ Form submission successful!')
+      console.log('✅ AI course registration submitted successfully!')
       return true
     } catch (primaryError) {
-      console.warn('⚠️ Primary form submission failed, using fallback...')
+      console.error('❌ Primary AI course registration failed:', primaryError)
+      console.log('📊 Failed submission data:', submissionData)
       
       try {
-        await supabaseHelpers.trackUserAction('form_submission_fallback', {
+        await supabaseHelpers.trackUserAction('ai_course_registration_fallback', {
           form_data: submissionData,
           primary_error: String(primaryError),
-          fallback_method: 'user_actions_table'
+          error_details: primaryError instanceof Error ? {
+            name: primaryError.name,
+            message: primaryError.message,
+            stack: primaryError.stack?.substring(0, 500)
+          } : primaryError,
+          fallback_method: 'user_actions_table',
+          timestamp: new Date().toISOString()
         })
-        console.log('✅ Form data saved via fallback method!')
+        console.log('✅ AI course registration data saved via fallback method!')
         return true
       } catch (fallbackError) {
-        console.error('❌ Both primary and fallback submissions failed:', fallbackError)
+        console.error('❌ Both primary and fallback AI course registration failed:', fallbackError)
         throw fallbackError
       }
     }

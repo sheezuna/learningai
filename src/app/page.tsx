@@ -1,19 +1,55 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { supabaseHelpers } from '@/lib/supabase'
-import { geolocationService } from '@/lib/geolocation'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
+import { supabaseHelpers } from '../lib/supabase'
+import { geolocationService } from '../lib/geolocation'
 
 export default function LandingPage() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+  const [isVisible, setIsVisible] = useState(false)
+  const [scrollY, setScrollY] = useState(0)
+  const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
     // Track page visit
     supabaseHelpers.trackPageVisit('main_page')
-  }, [])
+    
+    // Animate in on load
+    setIsVisible(true)
+    
+    // Mobile detection
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768)
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    
+    // Mouse tracking for interactive effects (desktop only)
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isMobile) {
+        setMousePosition({ x: e.clientX, y: e.clientY })
+      }
+    }
+    
+    // Scroll effects
+    const handleScroll = () => {
+      setScrollY(window.scrollY)
+    }
+    
+    window.addEventListener('mousemove', handleMouseMove)
+    window.addEventListener('scroll', handleScroll)
+    
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove)
+      window.removeEventListener('scroll', handleScroll)
+      window.removeEventListener('resize', checkMobile)
+    }
+  }, [isMobile])
 
   const handleAllowLocation = async () => {
     setIsLoading(true)
@@ -67,322 +103,183 @@ export default function LandingPage() {
   }
 
   return (
-    <div className="consent-container">
-      <div className="image-section">
-        <div className="image-overlay"></div>
-        <Image 
-          src="https://markovate.com/wp-content/uploads/2023/12/Next-Gen-Gaming_-The-Exciting-Role-of-AI-in-Gaming.webp" 
-          alt="AI Course - Learn AI Drawing and Game Development" 
-          className="prize-image"
-          fill
-          priority
+    <div className="gaming-landing">
+      {/* Dynamic Cursor Effect - Desktop Only */}
+      {!isMobile && (
+        <div 
+          className="cursor-glow"
+          style={{
+            left: mousePosition.x,
+            top: mousePosition.y,
+          }}
         />
+      )}
+      
+      {/* Animated Particle Background */}
+      <div className="particle-bg">
+        {[...Array(isMobile ? 10 : 20)].map((_, i) => (
+          <div key={i} className={`particle particle-${i % 5}`} />
+        ))}
       </div>
-      <div className="content-section">
-        <div className="logo-section">
-          <div className="ai-logo">🤖</div>
-          <h2 className="brand-name">AI Learning Academy</h2>
-        </div>
-        <h1>� � FREE AI Course - Limited Spots!</h1>
-        <p>
-          <strong>Ages 8-18 Welcome!</strong><br/>
-          Learn AI Drawing, World-Building & Game Development like Roblox! Join our exclusive free session and discover how AI can boost your creativity. Limited spots available - session starts soon!
-        </p>
-     
-        <button 
-          onClick={handleAllowLocation}
-          disabled={isLoading}
-          className={isLoading ? 'loading' : ''}
-        >
-          {isLoading ? 'Securing Your Spot...' : 'Join FREE Session Now'}
-        </button>
-
-           <div className="course-highlights">
-          <div className="highlight-item">
-            <span className="highlight-icon">🎨</span>
-            <span>AI Drawing & Art</span>
-          </div>
-               <div className="highlight-item">
-            <span className="highlight-icon">🎮</span>
-            <span>Game Development</span>
-          </div>
-          <div className="highlight-item">
-            <span className="highlight-icon">🌍</span>
-            <span>World Building</span>
-          </div>
-     
-        </div>
+      
+      {/* Floating Elements */}
+      <div className="floating-elements">
+        <div className="float-element element-1" style={{ transform: `translateY(${scrollY * 0.1}px)` }}>🎮</div>
+        <div className="float-element element-2" style={{ transform: `translateY(${scrollY * 0.15}px)` }}>⚡</div>
+        <div className="float-element element-3" style={{ transform: `translateY(${scrollY * 0.08}px)` }}>🚀</div>
+        <div className="float-element element-4" style={{ transform: `translateY(${scrollY * 0.12}px)` }}>💎</div>
+        <div className="float-element element-5" style={{ transform: `translateY(${scrollY * 0.09}px)` }}>🎯</div>
+        <div className="float-element element-6" style={{ transform: `translateY(${scrollY * 0.14}px)` }}>🌟</div>
+        <div className="float-element element-7" style={{ transform: `translateY(${scrollY * 0.11}px)` }}>🔥</div>
+        <div className="float-element element-8" style={{ transform: `translateY(${scrollY * 0.13}px)` }}>💫</div>
       </div>
 
-      <style jsx>{`
-        .consent-container {
-          display: flex;
-          flex-direction: column;
-          min-height: 100vh;
-          min-height: 100dvh;
-          margin: 0;
-          padding: 0;
-          background: #f8f8f8;
-          font-family: var(--font-poppins), 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-          overflow-x: hidden;
-        }
+      {/* Main Hero Container */}
+      <div className={`hero-container ${isVisible ? 'visible' : ''}`}>
+        <div className="hero-content">
+          {/* Top Badge */}
+          <div className="top-badge">
+            <div className="badge-glow"></div>
+            <span className="badge-icon">🎮</span>
+            <span className="badge-text">AI GAMING ACADEMY</span>
+            <span className="badge-icon pulse">🔥</span>
+          </div>
 
-        .image-section {
-          position: relative;
-          flex: 1 1 40%;
-          min-height: 250px;
-          max-height: 40vh;
-        }
+          {/* Main Hero Title */}
+          <h1 className="hero-title">
+            <span className="title-word word-1">BUILD</span>
+            <span className="title-word word-2">EPIC</span>
+            <span className="title-word word-3">
+              <span className="ai-gradient">AI</span>
+            </span>
+            <span className="title-word word-4">GAMES</span>
+            <span className="title-word word-5">LIKE A</span>
+            <span className="title-word word-6">PRO</span>
+          </h1>
 
-        .image-overlay {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background: linear-gradient(to top, rgba(0,0,0,0.6), rgba(0,0,0,0.1));
-          z-index: 1;
-        }
+          {/* Feature Pills */}
+          <div className="feature-pills">
+            <div className="pill pill-1">
+              <div className="pill-icon">🎨</div>
+              <span>AI Art</span>
+            </div>
+            <div className="pill pill-2">
+              <div className="pill-icon">🌍</div>
+              <span>World Building</span>
+            </div>
+            <div className="pill pill-3">
+              <div className="pill-icon">🎮</div>
+              <span>Game Dev</span>
+            </div>
+          </div>
 
-        .prize-image {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-        }
+          {/* Description */}
+          <div className="hero-description">
+            <div className="age-badge">Ages 8-18 • 100% FREE</div>
+            <p className="description-text">
+              Master AI tools to create <span className="highlight-text">Roblox-style games</span>, 
+              design incredible art, and build immersive worlds that blow minds!
+            </p>
+          </div>
 
-        .content-section {
-          flex: 1 1 auto;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-          padding: 2rem 1.5rem 2.5rem;
-          text-align: center;
-          box-sizing: border-box;
-          background: linear-gradient(to bottom, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.95) 100%);
-          border-top-left-radius: 25px;
-          border-top-right-radius: 25px;
-          margin-top: -25px;
-          position: relative;
-          box-shadow: 0 -8px 25px rgba(0,0,0,0.15);
-          z-index: 2;
-          min-height: 60vh;
-          backdrop-filter: blur(10px);
-        }
+          {/* Action Button */}
+          <button 
+            onClick={handleAllowLocation}
+            disabled={isLoading}
+            className={`action-button ${isLoading ? 'loading' : ''}`}
+          >
+            <div className="button-bg"></div>
+            <div className="button-content">
+              <span className="button-icon">{isLoading ? '⏳' : '🚀'}</span>
+              <span className="button-text">
+                {isLoading ? 'LAUNCHING YOUR ADVENTURE...' : 'START MY GAMING JOURNEY'}
+              </span>
+            </div>
+            <div className="button-shine"></div>
+          </button>
 
-        .logo-section {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          margin-bottom: 1.5rem;
-        }
+          {/* Social Proof */}
+          <div className="social-proof">
+            <div className="proof-item">
+              <div className="proof-number">2,500+</div>
+              <div className="proof-label">Young Creators</div>
+            </div>
+            <div className="proof-divider">✦</div>
+            <div className="proof-item">
+              <div className="proof-number">100%</div>
+              <div className="proof-label">FREE Forever</div>
+            </div>
+            <div className="proof-divider">✦</div>
+            <div className="proof-item">
+              <div className="proof-stars">⭐⭐⭐⭐⭐</div>
+              <div className="proof-label">5.0 Rating</div>
+            </div>
+          </div>
+        </div>
 
-        .ai-logo {
-          font-size: 3rem;
-          margin-bottom: 0.5rem;
-          filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
-        }
-
-        .brand-name {
-          font-size: 1.2rem;
-          font-weight: 600;
-          color: #7c3aed;
-          margin: 0;
-          letter-spacing: 0.5px;
-        }
-
-        .logo {
-          width: clamp(130px, 22vw, 150px);
-          margin-bottom: 1.5rem;
-          filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
-        }
-
-        h1 {
-          font-size: clamp(1.6rem, 4vw, 2rem);
-          font-weight: 700;
-          margin-bottom: 1rem;
-          color: #1f2937;
-          letter-spacing: -0.5px;
-          line-height: 1.3;
-          text-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .course-highlights {
-          display: flex;
-          justify-content: center;
-          gap: 1rem;
-          margin: 1.5rem 0;
-          flex-wrap: wrap;
-        }
-
-        .highlight-item {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          background: linear-gradient(135deg, #7c3aed 0%, #6366f1 100%);
-          color: white;
-          padding: 0.8rem 1rem;
-          border-radius: 12px;
-          font-size: 0.85rem;
-          font-weight: 500;
-          box-shadow: 0 4px 12px rgba(124, 58, 237, 0.2);
-          min-width: 80px;
-        }
-
-        .highlight-icon {
-          font-size: 1.5rem;
-          margin-bottom: 0.3rem;
-        }
-
-        p {
-          font-size: clamp(0.9rem, 2.5vw, 1.1rem);
-          font-weight: 400;
-          margin-bottom: 1.8rem;
-          line-height: 1.6;
-          color: #374151;
-          max-width: 420px;
-        }
-
-        button {
-          background: linear-gradient(135deg, #7c3aed 0%, #6366f1 100%);
-          color: white;
-          border: none;
-          padding: 18px 36px;
-          border-radius: 50px;
-          cursor: pointer;
-          font-size: clamp(1rem, 3vw, 1.2rem);
-          font-weight: 600;
-          letter-spacing: 0.5px;
-          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-          width: 100%;
-          max-width: 360px;
-          box-shadow: 0 4px 20px rgba(124, 58, 237, 0.3);
-          position: relative;
-          overflow: hidden;
-        }
-
-        button::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: -100%;
-          width: 100%;
-          height: 100%;
-          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-          transition: left 0.5s ease;
-        }
-
-        button:hover::before {
-          left: 100%;
-        }
-
-        button:hover:not(.loading) {
-          background: linear-gradient(135deg, #6366f1 0%, #5b21b6 100%);
-          transform: translateY(-3px);
-          box-shadow: 0 8px 25px rgba(124, 58, 237, 0.4);
-        }
-
-        button.loading {
-          opacity: 0.7;
-          cursor: not-allowed;
-        }
-
-        button:disabled {
-          opacity: 0.7;
-          cursor: not-allowed;
-          transform: none;
-        }
-
-        /* iPhone 12 Pro specific optimizations */
-        @media screen and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) {
-          .consent-container {
-            min-height: 100dvh;
-          }
+        {/* Gaming Visual Section */}
+        <div className="gaming-visual">
+          <div className="screen-container">
+            <div className="screen-frame">
+              <div className="screen-content">
+                <Image 
+                  src="https://markovate.com/wp-content/uploads/2023/12/Next-Gen-Gaming_-The-Exciting-Role-of-AI-in-Gaming.webp" 
+                  alt="AI Gaming Course - Create Amazing Games" 
+                  className="game-preview"
+                  fill
+                  priority
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+                />
+                <div className="screen-overlay">
+                  <div className="play-trigger">
+                    <div className="play-icon">▶</div>
+                    <div className="play-ripple"></div>
+                  </div>
+                </div>
+              </div>
+              <div className="screen-reflection"></div>
+            </div>
+          </div>
           
-          .image-section {
-            min-height: 320px;
-            max-height: 45vh;
-          }
-          
-          .content-section {
-            padding: 1.8rem 1.2rem 2.2rem;
-            min-height: 55vh;
-          }
-          
-          .logo {
-            width: 130px;
-            margin-bottom: 1.2rem;
-          }
-          
-          h1 {
-            font-size: 1.5rem;
-            margin-bottom: 0.8rem;
-          }
-          
-          p {
-            font-size: 0.9rem;
-            margin-bottom: 1.5rem;
-            line-height: 1.5;
-          }
-          
-          button {
-            padding: 16px 32px;
-            font-size: 1.1rem;
-            margin-top: 0.5rem;
-          }
-        }
+          {/* Gaming UI Elements */}
+          <div className="ui-elements">
+            <div className="ui-item ui-health">
+              <span className="ui-icon">❤️</span>
+              <span className="ui-value">100</span>
+              <div className="ui-bar health-bar"></div>
+            </div>
+            <div className="ui-item ui-energy">
+              <span className="ui-icon">⚡</span>
+              <span className="ui-value">250</span>
+              <div className="ui-bar energy-bar"></div>
+            </div>
+            <div className="ui-item ui-level">
+              <span className="ui-icon">💎</span>
+              <span className="ui-text">Level 99</span>
+              <div className="ui-sparkle"></div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-        /* General iPhone optimizations */
-        @media screen and (max-width: 414px) {
-          .consent-container {
-            min-height: 100dvh;
-          }
-          
-          .content-section {
-            padding: 1.5rem 1rem 2rem;
-          }
-          
-          .logo {
-            width: clamp(120px, 20vw, 140px);
-            margin-bottom: 1rem;
-          }
-          
-          h1 {
-            font-size: clamp(1.3rem, 3.8vw, 1.6rem);
-            margin-bottom: 0.8rem;
-          }
-          
-          p {
-            font-size: clamp(0.8rem, 2.2vw, 0.95rem);
-            margin-bottom: 1.4rem;
-          }
-          
-          button {
-            padding: 15px 28px;
-            font-size: clamp(0.95rem, 2.8vw, 1.1rem);
-            margin-top: 0.3rem;
-          }
-        }
-
-        /* Extra small screens */
-        @media screen and (max-width: 375px) {
-          .content-section {
-            padding: 1.2rem 0.8rem 1.8rem;
-          }
-          
-          .logo {
-            width: 115px;
-          }
-          
-          h1 {
-            font-size: 1.25rem;
-          }
-          
-          p {
-            font-size: 0.8rem;
-          }
-        }
-      `}</style>
+      {/* Mobile Enhancement: Bottom Action Bar */}
+      {isMobile && (
+        <div className="mobile-action-bar">
+          <div className="mobile-action-content">
+            <div className="mobile-info">
+              <span className="mobile-title">Start Learning AI</span>
+              <span className="mobile-subtitle">100% Free • Ages 8-18</span>
+            </div>
+            <button 
+              onClick={handleAllowLocation}
+              disabled={isLoading}
+              className="mobile-cta-button"
+            >
+              {isLoading ? '⏳' : '🚀'} Join Now
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

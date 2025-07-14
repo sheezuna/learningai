@@ -3,7 +3,6 @@
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabaseHelpers } from '@/lib/supabase'
-import Image from 'next/image'
 
 const REDIRECT_DELAY_MS = 10000 // 10 seconds
 
@@ -51,11 +50,11 @@ export default function ThankYouPage() {
           
           <div className="message-content">
             <p className="main-message">
-              Congratulations! You've successfully registered for our exclusive FREE AI course. Get ready to learn AI Drawing, World-Building, and Game Development like Roblox. Your learning journey starts soon!
+              Congratulations! You&apos;ve successfully registered for our exclusive FREE AI course. Get ready to learn AI Drawing, World-Building, and Game Development like Roblox. Your learning journey starts soon!
             </p>
             
             <div className="next-steps">
-              <h3>What's Next:</h3>
+              <h3>What&apos;s Next:</h3>
               <ul>
                 <li>🎨 Learn AI Drawing techniques and digital art creation</li>
                 <li>🌍 Master interactive world-building skills</li>
@@ -66,7 +65,7 @@ export default function ThankYouPage() {
             </div>
             
             <p className="final-note">
-              Check your parent's email for session details. Your creative AI adventure begins now!
+              Check your parent&apos;s email for session details. Your creative AI adventure begins now!
             </p>
           </div>
         </div>
