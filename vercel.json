@@ -1,4 +1,3 @@
 {
-  "buildCommand": "yarn build",
-  "outputDirectory": "dist"
+  "buildCommand": "yarn build"
 }
