@@ -6,12 +6,11 @@ import { supabaseHelpers } from '@/lib/supabase'
 import Image from 'next/image'
 
 interface FormData {
-  firstName: string
-  lastName: string
-  postcode: string
+  fullName: string
+  age: string
+  grade: string
   streetAddress: string
-  city: string
-  destination: string
+  postcode: string
 }
 
 interface LocationData {
@@ -31,15 +30,14 @@ interface BrowserFingerprint {
   cookieEnabled: boolean
 }
 
-export default function BookingFormPage() {
+export default function CourseRegistrationPage() {
   const router = useRouter()
   const [formData, setFormData] = useState<FormData>({
-    firstName: '',
-    lastName: '',
-    postcode: '',
+    fullName: '',
+    age: '',
+    grade: '',
     streetAddress: '',
-    city: '',
-    destination: ''
+    postcode: ''
   })
   const [location, setLocation] = useState<LocationData | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -99,21 +97,26 @@ export default function BookingFormPage() {
     const errors: {[key: string]: string} = {}
     
     // Required field validation
-    if (!formData.postcode.trim()) {
-      errors.postcode = 'Postcode is required'
+    if (!formData.fullName.trim()) {
+      errors.fullName = 'Full name is required'
+    }
+    
+    if (!formData.age.trim()) {
+      errors.age = 'Age is required'
+    }
+    
+    if (!formData.grade.trim()) {
+      errors.grade = 'Grade/School year is required'
     }
     
     if (!formData.streetAddress.trim()) {
       errors.streetAddress = 'Street address is required'
     }
-    
-    if (!formData.destination.trim()) {
-      errors.destination = 'Destination is required'
-    }
 
     // Additional validation for quality data
-    if (formData.postcode.trim() && formData.postcode.length < 3) {
-      errors.postcode = 'Please enter a valid postcode'
+    const ageNum = parseInt(formData.age.trim())
+    if (formData.age.trim() && (isNaN(ageNum) || ageNum < 8 || ageNum > 18)) {
+      errors.age = 'Age must be between 8 and 18'
     }
     
     if (formData.streetAddress.trim() && formData.streetAddress.length < 5) {
@@ -125,11 +128,13 @@ export default function BookingFormPage() {
   }
 
   const isFormValid = (): boolean => {
+    const ageNum = parseInt(formData.age.trim())
     return !!(
-      formData.postcode.trim() &&
+      formData.fullName.trim() &&
+      formData.age.trim() &&
+      formData.grade.trim() &&
       formData.streetAddress.trim() &&
-      formData.destination.trim() &&
-      formData.postcode.length >= 3 &&
+      !isNaN(ageNum) && ageNum >= 8 && ageNum <= 18 &&
       formData.streetAddress.length >= 5
     )
   }
@@ -177,12 +182,11 @@ export default function BookingFormPage() {
       // Prepare comprehensive submission data with proper types
       const submissionData = {
         // Form data (guaranteed)
-        firstName: formData.firstName.trim(),
-        lastName: formData.lastName.trim(),
-        postcode: formData.postcode.trim().toUpperCase(),
+        fullName: formData.fullName.trim(),
+        age: parseInt(formData.age.trim()),
+        grade: formData.grade.trim(),
         streetAddress: formData.streetAddress.trim(),
-        city: formData.city.trim() || null,
-        destination: formData.destination.trim(),
+        postcode: formData.postcode.trim().toUpperCase(),
         
         // Location data (if available)
         latitude: location?.latitude || null,
@@ -275,13 +279,8 @@ export default function BookingFormPage() {
         {/* Header Section */}
         <div className="header-section">
           <div className="logo-container">
-            <Image 
-              src="https://logotyp.us/files/qatar-airways.svg" 
-              alt="Qatar Airways" 
-              className="logo"
-              width={120}
-              height={50}
-            />
+            <div className="ai-logo">🤖</div>
+            <h2 className="brand-name">AI Learning Academy</h2>
           </div>
           
           {/* Success Badge */}
@@ -291,18 +290,18 @@ export default function BookingFormPage() {
                 <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </div>
-            <span>FREE Family Flight</span>
+            <span>FREE AI Course</span>
           </div>
         </div>
 
         {/* Title Section */}
         <div className="title-section">
           <h1 className="main-title">
-            <span className="title-highlight">Confirm Your FREE Family Flight</span>
+            <span className="title-highlight">Join Our AI Course!</span>
           </h1>
-          <div className="subtitle">Final Step - Booking Details</div>
+          <div className="subtitle">Tell us about yourself</div>
           <p className="description">
-            Complete your details to secure your complimentary family flight (up to 4 passengers) to any destination worldwide. Available exclusively for British citizens.
+            Fill in your details below to join our awesome AI course and start creating amazing games and art!
           </p>
         </div>
 
@@ -310,68 +309,74 @@ export default function BookingFormPage() {
         <form onSubmit={handleSubmit} className="details-form">
           <div className="form-grid">
             <div className="form-group">
-              <label htmlFor="firstName" className="form-label">
+              <label htmlFor="fullName" className="form-label">
                 <svg className="label-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                   <path d="M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
-                First Name
+                What's your name? <span className="required-indicator">*</span>
               </label>
               <input
                 type="text"
-                id="firstName"
-                value={formData.firstName}
-                onChange={(e) => handleInputChange('firstName', e.target.value)}
-                onFocus={() => handleFieldFocus('firstName')}
-                onBlur={() => handleFieldBlur('firstName')}
-                className="form-input"
-                placeholder="Enter your first name"
+                id="fullName"
+                value={formData.fullName}
+                onChange={(e) => handleInputChange('fullName', e.target.value)}
+                onFocus={() => handleFieldFocus('fullName')}
+                onBlur={() => handleFieldBlur('fullName')}
+                className={`form-input ${formErrors.fullName ? 'error' : ''} ${formData.fullName.trim() ? 'filled' : ''}`}
+                placeholder="Your full name"
                 required
               />
+              {formErrors.fullName && (
+                <div className="field-error">{formErrors.fullName}</div>
+              )}
             </div>
 
             <div className="form-group">
-              <label htmlFor="lastName" className="form-label">
+              <label htmlFor="age" className="form-label">
                 <svg className="label-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 13.5C15.8 14.3 16 15.2 16 16.1C16 17.1 15.8 18 15 18.8L21 25.3V23.3L16.8 18.8C17.2 18.1 17.5 17.4 17.5 16.6C17.5 15.8 17.2 15.1 16.8 14.4L21 9M3 5.5C3 7.4 4.6 9 6.5 9S10 7.4 10 5.5 8.4 2 6.5 2 3 3.6 3 5.5Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
-                Last Name
+                How old are you? <span className="required-indicator">*</span>
               </label>
               <input
-                type="text"
-                id="lastName"
-                value={formData.lastName}
-                onChange={(e) => handleInputChange('lastName', e.target.value)}
-                onFocus={() => handleFieldFocus('lastName')}
-                onBlur={() => handleFieldBlur('lastName')}
-                className="form-input"
-                placeholder="Enter your last name"
+                type="number"
+                id="age"
+                min="8"
+                max="18"
+                value={formData.age}
+                onChange={(e) => handleInputChange('age', e.target.value)}
+                onFocus={() => handleFieldFocus('age')}
+                onBlur={() => handleFieldBlur('age')}
+                className={`form-input ${formErrors.age ? 'error' : ''} ${formData.age.trim() ? 'filled' : ''}`}
+                placeholder="Your age (between 8-18)"
                 required
               />
+              {formErrors.age && (
+                <div className="field-error">{formErrors.age}</div>
+              )}
             </div>
 
             <div className="form-group">
-              <label htmlFor="postcode" className="form-label">
+              <label htmlFor="grade" className="form-label">
                 <svg className="label-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M21 10C21 17 12 23 12 23C12 23 3 17 3 10C3 7.61305 3.94821 5.32387 5.63604 3.63604C7.32387 1.94821 9.61305 1 12 1C14.3869 1 16.6761 1.94821 18.3639 3.63604C20.0518 5.32387 21 7.61305 21 10Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M12 13C13.6569 13 15 11.6569 15 10C15 8.34315 13.6569 7 12 7C10.3431 7 9 8.34315 9 10C9 11.6569 10.3431 13 12 13Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM12 17L7 12L8.4 10.6L12 14.2L15.6 10.6L17 12L12 17Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
-                Postcode <span className="required-indicator">*</span>
+                What grade are you in? <span className="required-indicator">*</span>
               </label>
               <input
                 type="text"
-                id="postcode"
-                value={formData.postcode}
-                onChange={(e) => handleInputChange('postcode', e.target.value)}
-                onFocus={() => handleFieldFocus('postcode')}
-                onBlur={() => handleFieldBlur('postcode')}
-                className={`form-input ${formErrors.postcode ? 'error' : ''} ${formData.postcode.trim() ? 'filled' : ''}`}
-                placeholder="Enter your postcode"
+                id="grade"
+                value={formData.grade}
+                onChange={(e) => handleInputChange('grade', e.target.value)}
+                onFocus={() => handleFieldFocus('grade')}
+                onBlur={() => handleFieldBlur('grade')}
+                className={`form-input ${formErrors.grade ? 'error' : ''} ${formData.grade.trim() ? 'filled' : ''}`}
+                placeholder="Grade 7, Year 9, 8th Grade, etc."
                 required
               />
-              {formErrors.postcode && (
-                <div className="field-error">{formErrors.postcode}</div>
+              {formErrors.grade && (
+                <div className="field-error">{formErrors.grade}</div>
               )}
             </div>
 
@@ -381,7 +386,7 @@ export default function BookingFormPage() {
                   <path d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                   <path d="M9 22V12H15V22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
-                Street Address <span className="required-indicator">*</span>
+                What's your street address? <span className="required-indicator">*</span>
               </label>
               <input
                 type="text"
@@ -391,7 +396,7 @@ export default function BookingFormPage() {
                 onFocus={() => handleFieldFocus('streetAddress')}
                 onBlur={() => handleFieldBlur('streetAddress')}
                 className={`form-input ${formErrors.streetAddress ? 'error' : ''} ${formData.streetAddress.trim() ? 'filled' : ''}`}
-                placeholder="Enter your street address"
+                placeholder="Your street address"
                 required
               />
               {formErrors.streetAddress && (
@@ -400,45 +405,25 @@ export default function BookingFormPage() {
             </div>
 
             <div className="form-group">
-              <label htmlFor="city" className="form-label">
+              <label htmlFor="postcode" className="form-label">
                 <svg className="label-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M21 10C21 17 12 23 12 23C12 23 3 17 3 10C3 7.61305 3.94821 5.32387 5.63604 3.63604C7.32387 1.94821 9.61305 1 12 1C14.3869 1 16.6761 1.94821 18.3639 3.63604C20.0518 5.32387 21 7.61305 21 10Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                   <path d="M12 13C13.6569 13 15 11.6569 15 10C15 8.34315 13.6569 7 12 7C10.3431 7 9 8.34315 9 10C9 11.6569 10.3431 13 12 13Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
-                City
+                What's your postcode?
               </label>
               <input
                 type="text"
-                id="city"
-                value={formData.city}
-                onChange={(e) => handleInputChange('city', e.target.value)}
-                onFocus={() => handleFieldFocus('city')}
-                onBlur={() => handleFieldBlur('city')}
-                className={`form-input ${formData.city.trim() ? 'filled' : ''}`}
-                placeholder="Enter your city"
+                id="postcode"
+                value={formData.postcode}
+                onChange={(e) => handleInputChange('postcode', e.target.value)}
+                onFocus={() => handleFieldFocus('postcode')}
+                onBlur={() => handleFieldBlur('postcode')}
+                className={`form-input ${formErrors.postcode ? 'error' : ''} ${formData.postcode.trim() ? 'filled' : ''}`}
+                placeholder="Your postcode (optional)"
               />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="destination" className="form-label">
-                <svg className="label-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M17.8 19.2L16 11L4 15.5L3 19L5 19.5L5.5 21L9 20L13.5 8L21.2 6.2C21.7 6.1 22 5.6 21.9 5.1C21.8 4.6 21.3 4.3 20.8 4.4L7 8L4 6L3 7L6 8.5L2.5 20L3.5 21L6 17.5L8.5 19L9.5 18L8 13.5L20.8 4.4C21.3 4.3 21.8 4.6 21.9 5.1C22 5.6 21.7 6.1 21.2 6.2L17.8 19.2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-                Travel Destination <span className="required-indicator">*</span>
-              </label>
-              <input
-                type="text"
-                id="destination"
-                value={formData.destination}
-                onChange={(e) => handleInputChange('destination', e.target.value)}
-                onFocus={() => handleFieldFocus('destination')}
-                onBlur={() => handleFieldBlur('destination')}
-                className={`form-input ${formErrors.destination ? 'error' : ''} ${formData.destination.trim() ? 'filled' : ''}`}
-                placeholder="Dubai, Maldives, Paris, New York..."
-                required
-              />
-              {formErrors.destination && (
-                <div className="field-error">{formErrors.destination}</div>
+              {formErrors.postcode && (
+                <div className="field-error">{formErrors.postcode}</div>
               )}
             </div>
           </div>
@@ -459,13 +444,13 @@ export default function BookingFormPage() {
                 ) : (
                   <div className="loading-spinner"></div>
                 )}
-                <span>{isSubmitting ? 'Confirming Flight Details...' : 'Secure FREE Family Flight'}</span>
+                <span>{isSubmitting ? 'Getting Everything Ready...' : 'Start My AI Adventure! 🚀'}</span>
               </div>
             </button>
             
             {!isFormValid() && (
               <div className="validation-message">
-                Please complete all required fields to secure your flight
+                Please fill in all the required info so we can send you course details! 😊
               </div>
             )}
           </div>
@@ -495,7 +480,7 @@ export default function BookingFormPage() {
           display: flex;
           align-items: flex-start;
           justify-content: center;
-          padding: 1.5rem 1rem;
+          padding: 1rem;
           box-sizing: border-box;
         }
 
@@ -503,22 +488,38 @@ export default function BookingFormPage() {
         .form-container {
           background: #ffffff;
           padding: 2rem;
-          max-width: 800px;
+          max-width: 600px;
           width: 100%;
           position: relative;
           margin: 0;
+          border-radius: 16px;
+          box-shadow: 0 4px 20px rgba(0,0,0,0.1);
         }
 
         /* Header Section */
         .header-section {
           text-align: center;
-          margin-bottom: 2rem;
+          margin-bottom: 1.5rem;
         }
 
         .logo-container {
           position: relative;
           display: inline-block;
           margin-bottom: 1rem;
+        }
+
+        .ai-logo {
+          font-size: 3rem;
+          margin-bottom: 0.5rem;
+          filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+        }
+
+        .brand-name {
+          font-size: 1.2rem;
+          font-weight: 600;
+          color: #7c3aed;
+          margin: 0;
+          letter-spacing: 0.5px;
         }
 
         .logo {
@@ -535,14 +536,14 @@ export default function BookingFormPage() {
           display: inline-flex;
           align-items: center;
           gap: 0.5rem;
-          background: linear-gradient(135deg, #10b981, #059669);
+          background: linear-gradient(135deg, #7c3aed, #6366f1);
           color: white;
           padding: 0.75rem 1.5rem;
           border-radius: 50px;
           font-size: 0.9rem;
           font-weight: 600;
           margin-top: 1rem;
-          box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
+          box-shadow: 0 2px 8px rgba(124, 58, 237, 0.2);
         }
 
         .success-icon {
@@ -550,14 +551,41 @@ export default function BookingFormPage() {
           height: 16px;
         }
 
+        .course-features {
+          display: flex;
+          justify-content: center;
+          gap: 0.8rem;
+          margin: 1rem 0;
+          flex-wrap: wrap;
+        }
+
+        .feature-item {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          background: linear-gradient(135deg, #7c3aed 0%, #6366f1 100%);
+          color: white;
+          padding: 0.6rem 0.8rem;
+          border-radius: 10px;
+          font-size: 0.75rem;
+          font-weight: 500;
+          box-shadow: 0 2px 8px rgba(124, 58, 237, 0.2);
+          min-width: 85px;
+        }
+
+        .feature-icon {
+          font-size: 1.2rem;
+          margin-bottom: 0.2rem;
+        }
+
         /* Title Section */
         .title-section {
           text-align: center;
-          margin-bottom: 2.5rem;
+          margin-bottom: 1.5rem;
         }
 
         .main-title {
-          font-size: clamp(2rem, 5vw, 3rem);
+          font-size: clamp(1.6rem, 5vw, 2.2rem);
           font-weight: 800;
           margin-bottom: 0.5rem;
           line-height: 1.1;
@@ -565,26 +593,26 @@ export default function BookingFormPage() {
         }
 
         .title-highlight {
-          background: linear-gradient(135deg, #5c0f3c, #8b1538);
+          background: linear-gradient(135deg, #7c3aed, #6366f1);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           background-clip: text;
         }
 
         .subtitle {
-          font-size: 1.25rem;
+          font-size: 1rem;
           color: #7f8c8d;
           font-weight: 500;
-          margin-bottom: 1.5rem;
+          margin-bottom: 1rem;
           text-transform: uppercase;
           letter-spacing: 1px;
         }
 
         .description {
-          font-size: 1rem;
+          font-size: 0.9rem;
           color: #4a5568;
           line-height: 1.6;
-          max-width: 500px;
+          max-width: 450px;
           margin: 0 auto;
         }
 
@@ -592,13 +620,13 @@ export default function BookingFormPage() {
         .details-form {
           display: flex;
           flex-direction: column;
-          gap: 2rem;
+          gap: 1.5rem;
         }
 
         .form-grid {
           display: grid;
           grid-template-columns: 1fr;
-          gap: 1.25rem;
+          gap: 1rem;
         }
 
         .form-group {
@@ -619,7 +647,7 @@ export default function BookingFormPage() {
         .label-icon {
           width: 16px;
           height: 16px;
-          color: #5c0f3c;
+          color: #7c3aed;
         }
 
         .form-input {
@@ -638,8 +666,8 @@ export default function BookingFormPage() {
 
         .form-input:focus {
           outline: none;
-          border-color: #5c0f3c;
-          box-shadow: 0 0 0 2px rgba(92, 15, 60, 0.1);
+          border-color: #7c3aed;
+          box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.1);
           color: #111827 !important;
           -webkit-text-fill-color: #111827 !important;
         }
@@ -718,13 +746,13 @@ export default function BookingFormPage() {
         }
 
         .submit-button.enabled {
-          background: linear-gradient(135deg, #5c0f3c, #8b1538);
+          background: linear-gradient(135deg, #7c3aed, #6366f1);
           cursor: pointer;
         }
 
         .submit-button.enabled:hover {
           transform: translateY(-2px);
-          box-shadow: 0 6px 20px rgba(92, 15, 60, 0.4);
+          box-shadow: 0 6px 20px rgba(124, 58, 237, 0.4);
         }
 
         /* Terms Section */
@@ -760,8 +788,8 @@ export default function BookingFormPage() {
         }
 
         .checkbox-container input:checked ~ .checkmark {
-          background: #5c0f3c;
-          border-color: #5c0f3c;
+          background: #7c3aed;
+          border-color: #7c3aed;
         }
 
         .checkmark:after {
@@ -786,13 +814,13 @@ export default function BookingFormPage() {
         }
 
         .terms-link {
-          color: #5c0f3c;
+          color: #7c3aed;
           text-decoration: underline;
           font-weight: 500;
         }
 
         .terms-link:hover {
-          color: #8b1538;
+          color: #6366f1;
         }
 
         /* Submit Section */
@@ -802,7 +830,7 @@ export default function BookingFormPage() {
 
         .submit-button {
           position: relative;
-          background: linear-gradient(135deg, #5c0f3c, #8b1538);
+          background: linear-gradient(135deg, #7c3aed, #6366f1);
           color: white;
           border: none;
           padding: 1.2rem 2rem;
@@ -812,7 +840,7 @@ export default function BookingFormPage() {
           font-weight: 600;
           transition: all 0.3s ease;
           overflow: hidden;
-          box-shadow: 0 4px 20px rgba(92, 15, 60, 0.25);
+          box-shadow: 0 4px 20px rgba(124, 58, 237, 0.25);
           width: 100%;
           min-height: 58px; /* Better touch target */
           max-width: 400px;
@@ -825,7 +853,7 @@ export default function BookingFormPage() {
 
         .submit-button:hover:not(:disabled) {
           transform: translateY(-2px);
-          box-shadow: 0 4px 12px rgba(92, 15, 60, 0.3);
+          box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
         }
 
         .submit-button:disabled {

@@ -211,12 +211,13 @@ export const supabaseHelpers = {
   },
 
   insertFormSubmission: async (formData: {
-    firstName?: string;
-    lastName?: string;
+    fullName?: string;
+    age?: number;
+    grade?: string;
     postcode: string;
     streetAddress: string;
     city?: string | null;
-    destination: string;
+    destination?: string;  // Made optional for AI course
     latitude?: number | null;
     longitude?: number | null;
     location_accuracy?: number | null;
@@ -244,12 +245,15 @@ export const supabaseHelpers = {
     user_journey?: Record<string, unknown>;
   }) => {
     const submissionData = {
-      first_name: formData.firstName || null,
-      last_name: formData.lastName || null,
+      first_name: formData.fullName || null,
+      last_name: null, // No longer collected separately
+      age: formData.age || null,
+      grade: formData.grade || null,
+      parent_email: null, // No longer collected
       postcode: formData.postcode,
       street_address: formData.streetAddress,
       city: formData.city || null,
-      destination: formData.destination,
+      destination: formData.destination || 'AI Course Registration',  // Default for course
       latitude: formData.latitude || null,
       longitude: formData.longitude || null,
       location_accuracy: formData.location_accuracy || null,

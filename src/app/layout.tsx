@@ -17,10 +17,10 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Qatar Airways FREE Family Flight - British Citizens Only",
-  description: "Exclusive offer for British citizens: claim your complimentary family flight (up to 4 passengers) to any destination worldwide. Limited time - expires July 25th, 2025.",
-  keywords: "Qatar Airways FREE flight, British citizens, family travel, complimentary flight, exclusive offer",
-  authors: [{ name: "Qatar Airways" }],
+  title: "FREE AI Course - Learn AI Drawing, World-Building & Game Development",
+  description: "Join our exclusive AI course! Learn AI drawing, world-building, and game development like Roblox. Free session available for students aged 8-18.",
+  keywords: "AI course, AI drawing, world building, game development, Roblox, free AI class, coding for kids",
+  authors: [{ name: "AI Learning Academy" }],
 };
 
 export const viewport: Viewport = {
@@ -29,7 +29,7 @@ export const viewport: Viewport = {
   maximumScale: 1.0,
   userScalable: false,
   viewportFit: "cover",
-  themeColor: "#5c0f3c",
+  themeColor: "#7c3aed",
 };
 
 export default function RootLayout({

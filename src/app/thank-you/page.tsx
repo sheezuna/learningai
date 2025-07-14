@@ -27,19 +27,14 @@ export default function ThankYouPage() {
       <div className="content-container">
         <div className="header-section">
           <div className="logo-container">
-            <Image 
-              src="https://logotyp.us/files/qatar-airways.svg" 
-              alt="Qatar Airways" 
-              className="logo"
-              width={140}
-              height={60}
-            />
+            <div className="ai-logo">🤖</div>
+            <h2 className="brand-name">AI Learning Academy</h2>
           </div>
           
-          {/* Green badge centered under logo */}
+          {/* Purple badge centered under logo */}
           <div className="badge-container">
-            <div className="free-flight-badge">
-              Free Family Flight
+            <div className="free-course-badge">
+              FREE AI Course Secured
             </div>
           </div>
         </div>
@@ -51,26 +46,27 @@ export default function ThankYouPage() {
             </svg>
           </div>
           
-          <h1>Congratulations!</h1>
-          <h2>Your FREE Family Flight is Reserved</h2>
+          <h1>Welcome to AI Learning Academy!</h1>
+          <h2>Your FREE Course Spot is Secured ✨</h2>
           
           <div className="message-content">
             <p className="main-message">
-              Your complimentary family flight (up to 4 passengers) has been successfully reserved. A Qatar Airways specialist will contact you within 24 hours to confirm your booking and travel details.
+              Congratulations! You've successfully registered for our exclusive FREE AI course. Get ready to learn AI Drawing, World-Building, and Game Development like Roblox. Your learning journey starts soon!
             </p>
             
             <div className="next-steps">
-              <h3>What Happens Next:</h3>
+              <h3>What's Next:</h3>
               <ul>
-                <li>✈️ Personal booking specialist contact within 24 hours</li>
-                <li>📅 Flexible travel dates to any Qatar Airways destination</li>
-                <li>🎯 Premium cabin service and priority boarding</li>
-                <li>📱 Dedicated support throughout your journey</li>
+                <li>🎨 Learn AI Drawing techniques and digital art creation</li>
+                <li>🌍 Master interactive world-building skills</li>
+                <li>🎮 Develop games like Roblox using AI tools</li>
+                <li>📧 Course details and session link sent to parent email</li>
+                <li>� Join our online community of young AI creators</li>
               </ul>
             </div>
             
             <p className="final-note">
-              Check your email for confirmation details. Your extraordinary family adventure awaits!
+              Check your parent's email for session details. Your creative AI adventure begins now!
             </p>
           </div>
         </div>
@@ -121,20 +117,34 @@ export default function ThankYouPage() {
           margin-bottom: 1.5rem;
         }
 
+        .ai-logo {
+          font-size: 4rem;
+          margin-bottom: 0.5rem;
+          filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+        }
+
+        .brand-name {
+          font-size: 1.4rem;
+          font-weight: 600;
+          color: #7c3aed;
+          margin: 0;
+          letter-spacing: 0.5px;
+        }
+
         .logo {
           width: clamp(120px, 20vw, 140px);
           height: auto;
         }
 
-        /* Green Badge */
+        /* Purple Badge */
         .badge-container {
           display: flex;
           justify-content: center;
           margin-bottom: 1rem;
         }
 
-        .free-flight-badge {
-          background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        .free-course-badge {
+          background: linear-gradient(135deg, #7c3aed 0%, #6366f1 100%);
           color: white;
           padding: 0.75rem 1.5rem;
           border-radius: 30px;
@@ -142,7 +152,7 @@ export default function ThankYouPage() {
           font-size: 1rem;
           text-transform: uppercase;
           letter-spacing: 0.5px;
-          box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+          box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
         }
 
         /* Success Content */
@@ -154,7 +164,7 @@ export default function ThankYouPage() {
           width: 80px;
           height: 80px;
           margin: 0 auto 1.5rem;
-          color: #10b981;
+          color: #7c3aed;
         }
 
         .success-icon-large svg {
@@ -167,7 +177,7 @@ export default function ThankYouPage() {
           font-weight: 700;
           color: #1f2937;
           margin-bottom: 0.5rem;
-          background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+          background: linear-gradient(135deg, #7c3aed 0%, #6366f1 100%);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           background-clip: text;

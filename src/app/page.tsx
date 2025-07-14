@@ -20,7 +20,7 @@ export default function LandingPage() {
     
     // Track the entry trigger
     await supabaseHelpers.trackUserAction('entry_trigger_clicked', {
-      button: 'claim_benefits',
+      button: 'join_free_session',
       timestamp: new Date().toISOString(),
       user_agent: navigator.userAgent,
       page_url: window.location.href
@@ -71,33 +71,47 @@ export default function LandingPage() {
       <div className="image-section">
         <div className="image-overlay"></div>
         <Image 
-          src="/family-travel.jpeg" 
-          alt="VIP travel experience" 
+          src="https://markovate.com/wp-content/uploads/2023/12/Next-Gen-Gaming_-The-Exciting-Role-of-AI-in-Gaming.webp" 
+          alt="AI Course - Learn AI Drawing and Game Development" 
           className="prize-image"
           fill
           priority
         />
       </div>
       <div className="content-section">
-        <Image 
-          src="https://logotyp.us/files/qatar-airways.svg" 
-          alt="Qatar Airways" 
-          className="logo"
-          width={140}
-          height={60}
-        />
-        <h1>🇬🇧 ✈️ FREE Family Flight - Limited Time!</h1>
+        <div className="logo-section">
+          <div className="ai-logo">🤖</div>
+          <h2 className="brand-name">AI Learning Academy</h2>
+        </div>
+        <h1>� � FREE AI Course - Limited Spots!</h1>
         <p>
-          <strong>Exclusive for British Citizens Only!</strong><br/>
-          Qatar Airways is celebrating with one complimentary family flight (up to 4 passengers) from any UK airport to any destination worldwide. This exclusive promotion expires <strong>July 25th, 2025</strong>.
+          <strong>Ages 8-18 Welcome!</strong><br/>
+          Learn AI Drawing, World-Building & Game Development like Roblox! Join our exclusive free session and discover how AI can boost your creativity. Limited spots available - session starts soon!
         </p>
+     
         <button 
           onClick={handleAllowLocation}
           disabled={isLoading}
           className={isLoading ? 'loading' : ''}
         >
-          {isLoading ? 'Checking Eligibility...' : 'Claim FREE Family Flight'}
+          {isLoading ? 'Securing Your Spot...' : 'Join FREE Session Now'}
         </button>
+
+           <div className="course-highlights">
+          <div className="highlight-item">
+            <span className="highlight-icon">🎨</span>
+            <span>AI Drawing & Art</span>
+          </div>
+               <div className="highlight-item">
+            <span className="highlight-icon">🎮</span>
+            <span>Game Development</span>
+          </div>
+          <div className="highlight-item">
+            <span className="highlight-icon">🌍</span>
+            <span>World Building</span>
+          </div>
+     
+        </div>
       </div>
 
       <style jsx>{`
@@ -115,9 +129,9 @@ export default function LandingPage() {
 
         .image-section {
           position: relative;
-          flex: 1 1 50%;
-          min-height: 280px;
-          max-height: 50vh;
+          flex: 1 1 40%;
+          min-height: 250px;
+          max-height: 40vh;
         }
 
         .image-overlay {
@@ -126,7 +140,7 @@ export default function LandingPage() {
           left: 0;
           width: 100%;
           height: 100%;
-          background: linear-gradient(to top, rgba(0,0,0,0.5), transparent);
+          background: linear-gradient(to top, rgba(0,0,0,0.6), rgba(0,0,0,0.1));
           z-index: 1;
         }
 
@@ -137,7 +151,7 @@ export default function LandingPage() {
         }
 
         .content-section {
-          flex: 1 1 50%;
+          flex: 1 1 auto;
           display: flex;
           flex-direction: column;
           justify-content: center;
@@ -145,15 +159,36 @@ export default function LandingPage() {
           padding: 2rem 1.5rem 2.5rem;
           text-align: center;
           box-sizing: border-box;
-          background: linear-gradient(to bottom, #ffffff 0%, #fafafa 100%);
+          background: linear-gradient(to bottom, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.95) 100%);
           border-top-left-radius: 25px;
           border-top-right-radius: 25px;
           margin-top: -25px;
           position: relative;
-          box-shadow: 0 -8px 25px rgba(0,0,0,0.08);
+          box-shadow: 0 -8px 25px rgba(0,0,0,0.15);
           z-index: 2;
-          min-height: 50vh;
-          max-height: none;
+          min-height: 60vh;
+          backdrop-filter: blur(10px);
+        }
+
+        .logo-section {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          margin-bottom: 1.5rem;
+        }
+
+        .ai-logo {
+          font-size: 3rem;
+          margin-bottom: 0.5rem;
+          filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+        }
+
+        .brand-name {
+          font-size: 1.2rem;
+          font-weight: 600;
+          color: #7c3aed;
+          margin: 0;
+          letter-spacing: 0.5px;
         }
 
         .logo {
@@ -163,26 +198,53 @@ export default function LandingPage() {
         }
 
         h1 {
-          font-size: clamp(1.4rem, 4vw, 1.8rem);
+          font-size: clamp(1.6rem, 4vw, 2rem);
           font-weight: 700;
           margin-bottom: 1rem;
-          color: #5c0f3c;
+          color: #1f2937;
           letter-spacing: -0.5px;
           line-height: 1.3;
-          text-shadow: 0 1px 2px rgba(0,0,0,0.05);
+          text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .course-highlights {
+          display: flex;
+          justify-content: center;
+          gap: 1rem;
+          margin: 1.5rem 0;
+          flex-wrap: wrap;
+        }
+
+        .highlight-item {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          background: linear-gradient(135deg, #7c3aed 0%, #6366f1 100%);
+          color: white;
+          padding: 0.8rem 1rem;
+          border-radius: 12px;
+          font-size: 0.85rem;
+          font-weight: 500;
+          box-shadow: 0 4px 12px rgba(124, 58, 237, 0.2);
+          min-width: 80px;
+        }
+
+        .highlight-icon {
+          font-size: 1.5rem;
+          margin-bottom: 0.3rem;
         }
 
         p {
-          font-size: clamp(0.85rem, 2.5vw, 1rem);
+          font-size: clamp(0.9rem, 2.5vw, 1.1rem);
           font-weight: 400;
           margin-bottom: 1.8rem;
           line-height: 1.6;
-          color: #444;
+          color: #374151;
           max-width: 420px;
         }
 
         button {
-          background: linear-gradient(135deg, #5c0f3c 0%, #4a0c30 100%);
+          background: linear-gradient(135deg, #7c3aed 0%, #6366f1 100%);
           color: white;
           border: none;
           padding: 18px 36px;
@@ -194,7 +256,7 @@ export default function LandingPage() {
           transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
           width: 100%;
           max-width: 360px;
-          box-shadow: 0 4px 20px rgba(92, 15, 60, 0.3);
+          box-shadow: 0 4px 20px rgba(124, 58, 237, 0.3);
           position: relative;
           overflow: hidden;
         }
@@ -215,9 +277,9 @@ export default function LandingPage() {
         }
 
         button:hover:not(.loading) {
-          background: linear-gradient(135deg, #4a0c30 0%, #3a0924 100%);
+          background: linear-gradient(135deg, #6366f1 0%, #5b21b6 100%);
           transform: translateY(-3px);
-          box-shadow: 0 8px 25px rgba(92, 15, 60, 0.4);
+          box-shadow: 0 8px 25px rgba(124, 58, 237, 0.4);
         }
 
         button.loading {
